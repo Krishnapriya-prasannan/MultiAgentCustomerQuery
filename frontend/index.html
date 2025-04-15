@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Query Submission</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f4f4f4;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    input[type="text"] {
+      width: 60%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-right: 1rem;
+    }
+
+    button {
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #response {
+      margin-top: 1.5rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Submit Your Query</h2>
+
+  <input type="text" id="query" placeholder="Enter your issue here" />
+  <button onclick="sendQuery()">Submit</button>
+
+  <p id="response"></p>
+
+  <script>
+    async function sendQuery() {
+      const query = document.getElementById('query').value;
+
+      if (!query.trim()) {
+        document.getElementById('response').innerText = "Please enter a query.";
+        return;
+      }
+
+      try {
+        const res = await fetch('http://127.0.0.1:5000/summarize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+
+        const data = await res.json();
+        document.getElementById('response').innerText = data.message;
+
+      } catch (err) {
+        document.getElementById('response').innerText = "Error connecting to server.";
+        console.error(err);
+      }
+    }
+  </script>
+
+</body>
+</html>
